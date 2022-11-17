@@ -4,9 +4,12 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 
 const passport = require("passport");
-const passport_jwt = require("");
+const jwt_strat = require("./strategies/jwt");
+
 
 const app = express();
+
+passport.use(jwt_strat);
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -35,6 +38,11 @@ app.post("/login", (req, res)=>{
     res.statusCode(401).json({
         message: "Auth failed",
     });
+});
+
+
+app.get("/protected", passport.authenticate("jwt", {session: false}), (req, res)=>{
+    return res.status(200).send("YAY! this is a protected route");
 });
 
 app.listen(3000);
